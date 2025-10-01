@@ -1,15 +1,22 @@
 package model;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 //Criando a entidade de pagamento
 public class PagamentoController {
+
+	
+	//Construtor vazio para recber parametros
+	public PagamentoController() {
+		
+	}
 	
 	//colocando os atributos de pagamento
 	private int idCliente;
 	private  int idVistoria;
 	private BigDecimal valor;
-	private String dataPagamento;
+	private Date dataPagamento;
 	private String formaPagamento;
 	private String statusPagamento;
 	
@@ -42,11 +49,11 @@ public class PagamentoController {
 		
 	}
 	
-	public String getDataPagamento() {
+	public Date getDataPagamento() {
 		return this.dataPagamento;
 		
 	}
-	public void setDataPagamento() {
+	public void setDataPagamento(Date dataPagamento) {
 		this.dataPagamento = dataPagamento;
 		
 	}
