@@ -1,12 +1,14 @@
 package model;
 
+import java.math.BigDecimal;
+
 //Criando a entidade de pagamento
 public class PagamentoController {
 	
 	//colocando os atributos de pagamento
 	private int idCliente;
 	private  int idVistoria;
-	private double valor;
+	private BigDecimal valor;
 	private String dataPagamento;
 	private String formaPagamento;
 	private String statusPagamento;
@@ -31,11 +33,11 @@ public class PagamentoController {
 		
 	}
 	
-	public double getValor() {
+	public BigDecimal getValor() {
 		return this.valor;
 		
 	}
-	public void setValor(double valor) {
+	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 		
 	}
@@ -62,8 +64,8 @@ public class PagamentoController {
 		return this.statusPagamento;
 		
 	}
-	public void setStatusPagamento(String formaPagamento) {
-		this.formaPagamento = formaPagamento;
+	public void setStatusPagamento(String statusPagamento) {
+		this.statusPagamento = statusPagamento;
 		
 	}
 	
