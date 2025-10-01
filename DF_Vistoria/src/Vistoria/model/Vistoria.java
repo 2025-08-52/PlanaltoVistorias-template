@@ -2,17 +2,17 @@ package Vistoria.model;
 
 import java.time.LocalDate;
 
-public class vistoria{
+public class Vistoria {
 	private int idVistoria;
 	private int idFuncionarios;
 	private int idAgendamento;
 	private LocalDate dataVistoria;
 	private String itensVerificados;
 	private String observacao;
+
+public Vistoria() {
 }
-public vistoria() {
-}
-public vistoria(int idVistoria, int idFuncionarios, int idAgendamento,LocalDate dataVistoria, String itensVerificados, String observacao) {
+public Vistoria(int idVistoria, int idFuncionarios, int idAgendamento,LocalDate dataVistoria, String itensVerificados, String observacao) {
 	super();
 	this.idVistoria = idVistoria;
 	this.idFuncionarios = idFuncionarios;
@@ -73,4 +73,3 @@ public void setObservacao(String observacao) {
     this.observacao = observacao;
 }
 }
-
