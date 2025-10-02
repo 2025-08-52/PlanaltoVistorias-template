@@ -12,7 +12,7 @@ public class VeiculoDAO {
 			stmt.setString(1, veiculo.getPlaca());
 			stmt.setString(2, veiculo.getMarca());
 			stmt.setString(3, veiculo.getModelo());
-			stmt.setString(4, veiculo.getAno()); // Ano como String
+			stmt.setString(4, veiculo.getAno()); 
 			stmt.setString(5, veiculo.getNumero_chassi());
 			stmt.setInt(6, veiculo.getId_Cliente());
 			stmt.executeUpdate();
@@ -34,7 +34,7 @@ public class VeiculoDAO {
 				veiculo.setPlaca(rs.getString("Placa"));
 				veiculo.setMarca(rs.getString("Marca"));
 				veiculo.setModelo(rs.getString("Modelo"));
-				veiculo.setAno(rs.getString("Ano")); // Ano como String
+				veiculo.setAno(rs.getString("Ano"));
 				veiculo.setNumero_chassi(rs.getString("Numero_chassi"));
 				veiculo.setId_Cliente(rs.getInt("Id_Cliente"));
 				lista.add(veiculo);
