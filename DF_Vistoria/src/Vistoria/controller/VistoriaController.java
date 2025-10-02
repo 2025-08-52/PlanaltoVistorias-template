@@ -1,6 +1,7 @@
-package VistoriaController;
+package Controller;
 
 import java.time.LocalDate;
+import model.vistoria;
 import java.util.ArrayList;
 import java.util.List;
 
