@@ -1,22 +1,22 @@
 package Vistoria.model;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Vistoria {
 	private int idVistoria;
-	private int idFuncionarios;
-	private int idAgendamento;
-	private LocalDate dataVistoria;
+	private Funcionario funcionario;
+	private Agendamento agendamento;
+	private Date dataVistoria;
 	private String itensVerificados;
 	private String observacao;
 
 public Vistoria() {
 }
-public Vistoria(int idVistoria, int idFuncionarios, int idAgendamento,LocalDate dataVistoria, String itensVerificados, String observacao) {
+public Vistoria(int idVistoria, Funcionario funcionario, Agendamento agendamento,Date dataVistoria, String itensVerificados, String observacao) {
 	super();
 	this.idVistoria = idVistoria;
-	this.idFuncionarios = idFuncionarios;
-	this.idAgendamento = idAgendamento;
+	this.funcionario = funcionario;
+	this.agendamento = agendamento;
 	this.dataVistoria = dataVistoria;
 	this.itensVerificados  = itensVerificados;
 	this.observacao = observacao;
@@ -27,15 +27,15 @@ public int getIdVistoria() {
     return idVistoria;
 }
 
-public int getIdFuncionarios() {
-    return idFuncionarios;
+public Funcionario getFuncionario() {
+    return funcionario;
 }
 
-public int getIdAgendamento() {
-    return idAgendamento;
+public Agendamento getIdAgendamento() {
+    return agendamento;
 }
 
-public LocalDate getDataVistoria() {
+public Date getDataVistoria() {
     return dataVistoria;
 }
 
@@ -53,15 +53,15 @@ public void setIdVistoria(int idVistoria) {
     this.idVistoria = idVistoria;
 }
 
-public void setIdFuncionarios(int idFuncionarios) {
-    this.idFuncionarios = idFuncionarios;
+public void setFuncionario(Funcionario funcionario) {
+    this.funcionario = funcionario;
 }
 
-public void setIdAgendamento(int idAgendamento) {
-    this.idAgendamento = idAgendamento;
+public void setIdAgendamento(Agendamento agendamento) {
+    this.agendamento = agendamento;
 }
 
-public void setDataVistoria(LocalDate dataVistoria) {
+public void setDataVistoria(Date dataVistoria) {
     this.dataVistoria = dataVistoria;
 }
 
