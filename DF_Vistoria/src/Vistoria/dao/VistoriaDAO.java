@@ -22,7 +22,7 @@ public class VistoriaDAO {
 			 stmt.setString(5, vistoria.getObservacao());
 			 int rowsAffected = stmt.executeUpdate();
 			 
-			 vistoria.setDataVistoria(Date.valueOf("2025-09-12"));
+			 //vistoria.setDataVistoria(Date.valueOf("2025-09-12"));
 			 
 			 try(ResultSet rs = stmt.getGeneratedKeys()){
 				 if(rs.next()) {
