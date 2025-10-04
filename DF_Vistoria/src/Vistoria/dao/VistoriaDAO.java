@@ -9,35 +9,35 @@ import DB.Conexao;
 
 public class VistoriaDAO {
 	
-	public void salvar(Vistoria vistoria) {
-		String sql = "UPDATE vistoria SET dataVistoria=?, resultado=?, statusPagamento=?, observacoes=?, idAgendamento=?, idFuncionario=? "
-                + "WHERE idVistoria=?";
-		
-		 try (Connection conn = Conexao.conectar();
-			  PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-			
-			 stmt.setInt(1, vistoria.getIdVistoria());
-			 stmt.setDate(2, vistoria.getDataVistoria());
-			 stmt.setString(3, vistoria.getResultado());
-			 stmt.setString(4, vistoria.getStatusPagamento());
-			 stmt.setString(5, vistoria.getObservacoes());
-			 stmt.setInt(6, vistoria.getIdAgendamento());
-			 stmt.setInt(7, vistoria.getIdFuncionario());
+	public static boolean inserirVistoria(Vistoria vistoria) {
+		 String sql = "INSERT INTO vistoria(Id_Funcionarios, Id_Agendamento, Data_Vistoria, Itens_Verificados, Observacao) VALUES (?, ?, ?, ?, ?)";
+		 try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+			 
+			 stmt.setInt(1, vistoria.getFuncionario().getId_Funcionario());
+			 stmt.setInt(2, vistoria.getAgendamento().getIdAgendamento());
+			 stmt.setDate(3, vistoria.getDataVistoria());
+			 stmt.setString(4, vistoria.getItensVerificados());
+			 stmt.setString(5, vistoria.getObservacao());
 			 
 			 stmt.executeUpdate();
 			 
-			 try (ResultSet rs = stmt.getGeneratedKeys()){
-				 if (rs.next()) {
-					 vistoria.setIdVistoria(rs.getInt(1));
+			 
+			 
+			 
+			 try(ResultSet rs = stmt.getGeneratedKeys()){
+				 if(rs.next()) {
+					 int idVistoria = rs.getInt(1);
+					 vistoria.setIdVistoria(idVistoria);
 				 }
+				 
 			 }
-			 
-			 System.out.println("Vistoria salva com sucesso. Id Gerado: " + vistoria.getIdVistoria());
-			 
-			 System.out.println("Vistoria atualizada.");
-		} catch (SQLException e) {
-			System.out.println("Erro ao salvar vistoria: " + e.getMessage());
-		}
+			return true;
+			
+		 }catch(SQLException e) {
+				System.err.println("Erro ao inserir vistoria "+ e.getMessage());
+				return false;
+			}
+ 
 	}
 	
 public List<Vistoria> listar(){
