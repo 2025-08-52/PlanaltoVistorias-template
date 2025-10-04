@@ -6,17 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VeiculoDAO {
-	public void inserir(Veiculo veiculo) {
-		String sql = "INSERT INTO Veiculo (Placa, Marca, Modelo, Ano, Numero_chassi, Id_Cliente) VALUES (?, ?, ?, ?, ?, ?)";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+	public static void inserir(Veiculo veiculo) {
+		String sql = "INSERT INTO Veiculos (Placa, Marca, Modelo, Ano, Numero_chassi, Id_Clientes) VALUES (?, ?, ?, ?, ?, ?)";
+		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, veiculo.getPlaca());
 			stmt.setString(2, veiculo.getMarca());
 			stmt.setString(3, veiculo.getModelo());
 			stmt.setString(4, veiculo.getAno()); 
 			stmt.setString(5, veiculo.getNumero_chassi());
-			stmt.setInt(6, veiculo.getId_Cliente());
+			stmt.setInt(6, veiculo.getCliente().getId_Cliente());
 			stmt.executeUpdate();
 			System.out.println("Veículo cadastrado com sucesso!");
+			
+			try(ResultSet rs = stmt.getGeneratedKeys()){
+				
+				if(rs.next()) {
+					veiculo.setId_Veiculo(rs.getInt(1));
+					
+					System.out.println(veiculo.getId_Veiculo());
+				}
+				
+			}
+			
 		} catch (SQLException e) {
 			System.out.println("Erro no cadastro do veículo: " + e.getMessage());
 		}
