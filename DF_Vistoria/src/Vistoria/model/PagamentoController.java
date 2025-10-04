@@ -1,50 +1,53 @@
 package model;
 
-import java.math.BigDecimal;
+//foi importado a classe do pacote math para tratar big decimal
 import java.sql.Date;
 
 //Criando a entidade de pagamento
 public class PagamentoController {
-
-	
-	//Construtor vazio para recber parametros
-	public PagamentoController() {
-		
-	}
 	
 	//colocando os atributos de pagamento
-	private int idCliente;
-	private  int idVistoria;
-	private BigDecimal valor;
+	private Cliente cliente;//dentro de cliente quero ter acesso ao id
+	private  Vistoria vistoria;//dentro de vistoria quero ter acesso ao id
+	private Vistoria vistoriaAntiga; //foi criado esse objeto para ter uma vistoria antiga para realizar o update
+	private double valor;
 	private Date dataPagamento;
 	private String formaPagamento;
 	private String statusPagamento;
 	
 	
-	//Colocando os getters e setters da entidade
-	public int getIdCliente() {
-		return this.idCliente;
+	public Cliente getCliente() {
+		return cliente;
 		
 	}
-	public void setIdCliente(int idCliente) {
-		this.idCliente = idCliente;
-		
-	}
-	
-	public int getIdVistoria() {
-		return this.idVistoria;
-		
-	}
-	public void setIdVistoria(int idVistoria) {
-		this.idVistoria = idVistoria;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 		
 	}
 	
-	public BigDecimal getValor() {
+	public Vistoria getVistoria() {
+		return this.vistoria;
+		
+	}
+	public void setVistoria(Vistoria vistoria) {
+		this.vistoria = vistoria;
+		
+	}
+	
+	public Vistoria getVistoriaAntiga() {
+		return this.vistoriaAntiga;
+		
+	}
+	public void setVistoriaAntiga(Vistoria vistoriaAntiga) {
+		this.vistoriaAntiga = vistoriaAntiga;
+		
+	}
+	
+	public double getValor() {
 		return this.valor;
 		
 	}
-	public void setValor(BigDecimal valor) {
+	public void setValor(double valor) {
 		this.valor = valor;
 		
 	}
