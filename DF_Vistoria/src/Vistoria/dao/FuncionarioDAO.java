@@ -7,20 +7,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FuncionarioDAO {
-    public void inserir(Funcionario funcionario) {
-        String sql = "INSERT INTO Funcionario (Nome, Cpf, Cargo, Telefone) VALUES (?, ?, ?, ?)";
-        try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, funcionario.getNome());
-            stmt.setString(2, funcionario.getCpf());
-            stmt.setString(3, funcionario.getCargo());
-            stmt.setString(4, funcionario.getTelefone());
+    public static void inserir(Funcionario funcionario) {
+        String sql = "INSERT INTO Funcionarios (Nome, Cpf, Cargo, Telefone) VALUES (?, ?, ?, ?)";
+        try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        	stmt.setString(1, funcionario.getNome());
+        	stmt.setString(2, funcionario.getCpf());
+        	stmt.setString(3, funcionario.getCargo());
+        	stmt.setString(4, funcionario.getTelefone());
+        	
             stmt.executeUpdate();
             System.out.println("Funcionario cadastrado com sucesso!");
+            
+            try(ResultSet rs = stmt.getGeneratedKeys()){
+            	
+            	if(rs.next()) {
+            		funcionario.setId(rs.getInt(1));
+            		System.out.println(funcionario.getId_Funcionario());
+            		
+            	}
+            	
+            }
+            
+          
 
         } catch (SQLException e) {
             System.out.println("Erro para cadastrar Funcionario:" + e.getMessage());
         }
     }
+
 
     public List<Funcionario> listar() {
         List<Funcionario> lista = new ArrayList<>();
