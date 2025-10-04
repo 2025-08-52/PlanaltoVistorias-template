@@ -97,7 +97,7 @@ public class PagamentoDAO {
 	}
 	
 	//metodo para atualizar a forma de pagamento
-	public void atualizarFormaPagamento(PagamentoController pagamento) {
+	public static void atualizarFormaPagamento(PagamentoController pagamento) {
 		//passando o comando sql
 		String sql = "UPDATE Pagamento SET Id_Clientes = ?, Id_Vistoria = ?, Valor = ?, Data_Pagamento = ?, Forma_Pagamento = ?, "
 				+ "Status_Pagamento = ? WHERE Id_Vistoria = ?";
@@ -112,6 +112,7 @@ public class PagamentoDAO {
 			stmt.setDate(4, pagamento.getDataPagamento());
 			stmt.setString(5, pagamento.getFormaPagamento());
 			stmt.setString(6, pagamento.getStatusPagamento());
+			stmt.setInt(7, pagamento.getVistoriaAntiga().getIdVistoria());
 			
 			//executando os dados inseridos
 			stmt.executeUpdate();
@@ -123,5 +124,28 @@ public class PagamentoDAO {
 		
 	}
 	
+	//Criando o metodo de deletar o pagamento
+	public static void deletarPagamento(int idVistoria) {
+		//Criando o comando sql
+		String sql = "DELETE FROM Pagamento WHERE Id_Vistoria = ?";
+		
+		//tentando realizar o comando
+		try(Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)){
+			
+			//passando o valor para o db
+			stmt.setInt(1, idVistoria);
+			
+			//executando o valor passado
+			stmt.executeUpdate();
+			
+		}catch(SQLException e) {//caso dê um erro, entrara na exceção
+			System.out.println("Erro ao excluir pagamento "+ e.getMessage());
+			
+		}
+		
+		
+	}
+	
 	
 }
+
