@@ -69,7 +69,7 @@ public List<Vistoria> listar(){
 }
 
 public void atualizar(Vistoria vistoria) {
-	String sql = "UPDATE vistoria SET data_vistoria=?, itens_verificados=?, resultado=?, status_pagamento=?, observacoes=?, idPagamento=?, idFuncionario=? WHERE idVistoria=";
+	String sql = "UPDATE vistoria SET data_vistoria=?, itens_verificados=?, resultado=?, status_pagamento=?, observacoes=?, idPagamento=?, idFuncionario=? WHERE idVistoria=?";
 	
 	try(Connection conn = Conexao.conectar();
 			PreparedStatement stmt = conn.prepareStatement(sql)) {
