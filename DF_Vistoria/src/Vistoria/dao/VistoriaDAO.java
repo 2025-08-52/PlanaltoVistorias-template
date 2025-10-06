@@ -1,46 +1,51 @@
 package dao;
 
 import model.Vistoria;
-import java.sql.*;
+import db.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Date;
-import DB.Conexao;
+import java.sql.*;
+import model.Funcionario;
+import model.Agendamento;
 
 public class VistoriaDAO {
-	
+
 	public static boolean inserirVistoria(Vistoria vistoria) {
-		 String sql = "INSERT INTO vistoria(Id_Funcionarios, Id_Agendamento, Data_Vistoria, Itens_Verificados, Observacao) VALUES (?, ?, ?, ?, ?)";
-		 try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-			 
-			 stmt.setInt(1, vistoria.getFuncionario().getId_Funcionario());
-			 stmt.setInt(2, vistoria.getAgendamento().getIdAgendamento());
-			 stmt.setDate(3, vistoria.getDataVistoria());
-			 stmt.setString(4, vistoria.getItensVerificados());
-			 stmt.setString(5, vistoria.getObservacao());
-			 
-			 stmt.executeUpdate();
-			 
-			 
-			 
-			 
-			 try(ResultSet rs = stmt.getGeneratedKeys()){
-				 if(rs.next()) {
-					 int idVistoria = rs.getInt(1);
-					 vistoria.setIdVistoria(idVistoria);
-				 }
-				 
-			 }
-			return true;
-			
-		 }catch(SQLException e) {
-				System.err.println("Erro ao inserir vistoria "+ e.getMessage());
-				return false;
+		String sql = "INSERT INTO vistoria(Id_Funcionarios, Id_Agendamento, Data_Vistoria, Itens_Verificados, Observacao) VALUES (?, ?, ?, ?, ?)";
+		try (Connection conn = Conexao.conectar();
+				PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+			stmt.setInt(1, vistoria.getFuncionario().getId_Funcionario());
+			stmt.setInt(2, vistoria.getAgendamento().getIdAgendamento());
+			stmt.setDate(3, vistoria.getDataVistoria());
+			stmt.setString(4, vistoria.getItensVerificados());
+			stmt.setString(5, vistoria.getObservacao());
+
+			stmt.executeUpdate();
+
+			try (ResultSet rs = stmt.getGeneratedKeys()) {
+				if (rs.next()) {
+					int idVistoria = rs.getInt(1);
+					vistoria.setIdVistoria(idVistoria);
+				}
+
 			}
- 
+			return true;
+
+		} catch (SQLException e) {
+			System.err.println("Erro ao inserir vistoria " + e.getMessage());
+			return false;
+		}
+
 	}
-	
+
 public List<Vistoria> listar(){
+	Funcionario funcionario = new Funcionario();
+	Agendamento agendamento = new Agendamento();
 	List<Vistoria> vistorias = new ArrayList<>();
 	String sql = "SELECT * FROM vistoria";
 	
@@ -49,17 +54,18 @@ public List<Vistoria> listar(){
 		ResultSet rs = stmt.executeQuery(sql)){
 		
 		while (rs.next()) {
-			Vistoria v = new Vistoria(
-					rs.getInt("idVistoria"),
-					rs.getDate("data_vistoria"),
-					rs.getString("itensVerificados"),
-					rs.getString("resultado"),
-					rs.getString("status_pagamento"),
-					rs.getString("observacoes"),
-					rs.getInt("idPagamento"),
-					rs.getInt("idFuncionario")
-					);
-			vistorias.add(v);
+			Vistoria vistoria = new Vistoria();
+			
+			vistoria.setIdVistoria(rs.getInt(rs.getInt("Id_Vistoria")));
+			funcionario.setId(rs.getInt("Id_Funcionario"));
+			vistoria.setFuncionario(funcionario);
+			agendamento.setIdAgendamento(rs.getInt("Id_Agendamento"));
+			vistoria.setIdAgendamento(agendamento);
+			vistoria.setDataVistoria(rs.getDate("Data_Vistoria"));
+			vistoria.setItensVerificados(rs.getString("Itens_Verificados"));
+			vistoria.setObservacao(rs.getString("Observacao"));
+			
+			vistorias.add(vistoria);
 		}
 	}catch(SQLException e) {
 		System.out.println("Erro ao lista vistorias: " + e.getMessage());
@@ -68,41 +74,37 @@ public List<Vistoria> listar(){
 	return vistorias;
 }
 
-public void atualizar(Vistoria vistoria) {
-	String sql = "UPDATE vistoria SET data_vistoria=?, itens_verificados=?, resultado=?, status_pagamento=?, observacoes=?, idPagamento=?, idFuncionario=? WHERE idVistoria=?";
-	
-	try(Connection conn = Conexao.conectar();
-			PreparedStatement stmt = conn.prepareStatement(sql)) {
-			
-				 stmt.setInt(1, vistoria.getIdVistoria());
-				 stmt.setDate(2, vistoria.getDataVistoria());
-				 stmt.setString(3, vistoria.getItensVerificados());
-				 stmt.setString(4, vistoria.getResultado());
-				 stmt.setString(4, vistoria.getStatusPagamento());
-				 stmt.setString(6, vistoria.getObservacoes());
-				 stmt.setInt(7, vistoria.getIdAgendamento());
-				 stmt.setInt(8, vistoria.getIdFuncionario());
-				 
-				 stmt.executeUpdate();
-				 System.out.println("Vistoria atualizada.");
-				 
-			} catch (SQLException e) {
-				System.out.println("Erro ao atualizar a vistoria: " + e.getMessage());
-			}
-}
+	public void atualizar(Vistoria vistoria) {
+		String sql = "UPDATE vistoria SET data_vistoria=?, itens_verificados=?, status_pagamento=?, observacoes=?, idPagamento=?, idFuncionario=? WHERE idVistoria=?";
 
-public void excluir(int idVistoria) {
-	String sql = "DELETE FROM vistoria WHERE idVistoria=?";
-	
-	try (Connection conn = Conexao.conectar();
-			PreparedStatement stmt = conn.prepareStatement(sql)) {
-		
-		stmt.setInt(1, idVistoria);
-		stmt.executeUpdate();
-		System.out.println("Vistoria excluída com sucesso.: ");
-		
-	} catch (SQLException e) {
-		System.out.println("Erro ao excluir vistoria: " + e.getMessage());
+		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, vistoria.getIdVistoria());
+			stmt.setDate(2, vistoria.getDataVistoria());
+			stmt.setString(3, vistoria.getItensVerificados());
+			stmt.setString(6, vistoria.getObservacao());
+			stmt.setInt(7, vistoria.getAgendamento().getIdAgendamento());
+			stmt.setInt(8, vistoria.getFuncionario().getId_Funcionario());
+
+			stmt.executeUpdate();
+			System.out.println("Vistoria atualizada.");
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao atualizar a vistoria: " + e.getMessage());
+		}
 	}
-  }
+
+	public void excluir(int idVistoria) {
+		String sql = "DELETE FROM vistoria WHERE idVistoria=?";
+
+		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, idVistoria);
+			stmt.executeUpdate();
+			System.out.println("Vistoria excluída com sucesso.: ");
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao excluir vistoria: " + e.getMessage());
+		}
+	}
 }
