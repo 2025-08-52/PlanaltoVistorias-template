@@ -58,6 +58,22 @@ CREATE TABLE Pagamento (
     FOREIGN KEY (Id_Vistoria) REFERENCES Vistoria(Id_Vistoria)
 );
 
+CREATE TABLE usuario(
+	
+    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(100) NOT NULL,
+    telefone varchar(11) NOT NULL
+
+);
+
+CREATE TABLE autenticacao(
+	idAutenticacao INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255),
+    senha VARCHAR(100)
+
+);
+
 ALTER TABLE Cliente ADD CONSTRAINT UK_Cliente_Cpf UNIQUE (Cpf);
 ALTER TABLE Funcionario ADD CONSTRAINT UK_Funcionario_Cpf UNIQUE (Cpf);
 ALTER TABLE Veiculo ADD CONSTRAINT UK_Veiculo_Placa UNIQUE (Placa);
