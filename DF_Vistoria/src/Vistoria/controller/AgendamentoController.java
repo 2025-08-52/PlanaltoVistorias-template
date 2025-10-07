@@ -118,9 +118,9 @@ public class Fncionario {
 		Agendamento.setVeiculo(Veiculo);
 		Agendamento.setData_Agendamento(Data_Agendamento);
 		Agendamento.setTipo_Servico(Tipo_Servico);
+	  CadastrarAgendamento(agendamento);
 
 	}
 
 }
-
 
