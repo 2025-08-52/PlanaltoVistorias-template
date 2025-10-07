@@ -1,7 +1,7 @@
 
 package Vistoria.controller;
 
-import Vistoria.dao.AgendamentoDAO;
+import Vistoria.model.
 import Vistoria.model.Agendamento;
 import Vistoria.model.Cliente;
 import Vistoria.model.Veiculo;
@@ -9,7 +9,7 @@ import Vistoria.model.Funcionario;
 import java.sql.Date;
 import java.util.List;
 
-public class AgendamentoController {
+public class Fncionario {
 	private AgendamentoDAO dao();
 
 	public AgendamentoController() {
@@ -18,8 +18,9 @@ public class AgendamentoController {
 	}
 
 	public void cadastrarAgendamento(Agendamento agendamento) {
-		if (agendamento.getCliente() == null | agendamento.getVeiculo() == null | agendamento.getFuncionario() == null
-				| agendamento.getData_Agendamento() == null | agendamento.getTipo_Servico().isEmpty()) {
+		if (agendamento.getCliente() == null || agendamento.getVeiculo() == null
+				|| agendamento.getFuncionario() == null | agendamento.getData_Agendamento() == null
+				|| agendamento.getTipo_Servico().isEmpty()) {
 			System.out.println("Todos os campos são obrigatórios.");
 			return;
 		}
@@ -55,20 +56,20 @@ public class AgendamentoController {
 		}
 	}
 
-	public void atualizarAgendamento(Agendameno agendamento) {
-		 if (agendamento.getCliente() == null  | agendamento.getVeiculo() == null |
-				 agendamento .get Funcionario() == null |agendamento.getData_Agendamento() == null |
-				 agendamento.getTipo_Servico().isEmpty()) {
-			 System.out.println("Todos os campos sao obrigatorios.");
-			 return;
-		 }
-		 if (agendamento.getTipo_Servico().length() <3) {
-			 System.out.println("Tipo de serviço deve ter pelo menos 3 caracteres.");
-			 return:
-		 }
-		 dao.atualizar(agendamento);
-		 
-	 }
+	public void atualizarAgendamento(Agendamento agendamento) {
+		if (agendamento.getCliente() == null || agendamento.getVeiculo() == null
+				|| agendamento.getFuncionario() == null | agendamento.getData_Agendamento() == null
+				|| agendamento.getTipo_Servico().isEmpty()) {
+			System.out.println("Todos os campos sao obrigatorios.");
+			return;
+		}
+		if (agendamento.getTipo_Servico().length() < 3) {
+			System.out.println("Tipo de serviço deve ter pelo menos 3 caracteres.");
+			return;
+		}
+		dao.atualizar(agendamento);
+
+	}
 
 	public void excluirAgendamento(int id) {
 		dao.excluir(id);
@@ -86,11 +87,40 @@ public class AgendamentoController {
 			 }
 		 }
 		 
-		 if(agendamentoEncontrado !- null) {
+		 if(agendamentoEncontrado !=null) {
 			 System.out.println("---- Detalhes do Agendamento ----");
 			 System.out.println("Id:" + agendamentoEncontrado.getId());
-			 S
+			 System.out.println("Cliente Id:" + agendamentoEncontrado.getCliente().getId_Cliente());
+			 System.out.println("Funcionario Id" + agendamentoEncontrado.getFuncionario().getId_Funcionario());
+			 System.out.println("Veiculo Id" + agendamentoEncontrado.getVeiculo().getId_Veiculo());
+			 System.out.println("Data:") + agendamentoEncontrado.getData_Agendamento());
+			 System.out.println("Tipo_Servico Id" + agendamentoEncontrado.getIdTipo_Servico()); 
+		 }else {
+			 System.out.println("nao foi possivel encontrar o Id:" + id);
 		 }
-		
 	}
+
+	public void agendamento(int ClienteId, int FuncionarioId, int veiculoId, Date Data_Agendamento,
+			string Tipo_Servico) {
+
+		Cliente cliente = new Cliente();
+		cliente.setId(ClienteId);
+
+		Funcionario funcionario = new Funcionario();
+		funcionario.setId(funcionario);
+
+		Veiculo veiculo = new Veiculo();
+		veiculo.setId(Veiculo);
+
+		Agendamento agendamento = new Agendamento();
+		Agendamento.setCliente(Cliente);
+		Agendamento.setFuncionario(Funcionario);
+		Agendamento.setVeiculo(Veiculo);
+		Agendamento.setData_Agendamento(Data_Agendamento);
+		Agendamento.setTipo_Servico(Tipo_Servico);
+
+	}
+
 }
+
+
