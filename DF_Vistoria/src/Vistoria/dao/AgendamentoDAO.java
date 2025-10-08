@@ -1,5 +1,6 @@
 package Vistoria.dao;
 
+import Vistoria.DB.Conexao;
 import Vistoria.model.Agendamento;
 import Vistoria.model.Veiculo;
 import Vistoria.model.Funcionario;
@@ -10,7 +11,7 @@ import java.util.List;
 public class AgendamentoDAO {
 	public void inserir(Agendamento agendamento) {
 		String sql = "INSERT INTO agendamento (Id_Cliente, Id_Veiculo, Id_Funcionario, data_agendamento, Tipo_Servico) VALUES (?, ?, ?, ?, ?)";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, agendamento.getCliente().getId_Cliente());
 			stmt.setInt(2, agendamento.getVeiculo().getId_Veiculo());
 			stmt.setInt(3, agendamento.getFuncionario().getId_Funcionario());
@@ -26,7 +27,7 @@ public class AgendamentoDAO {
 	public List<Agendamento> listar() {
 		List<Agendamento> lista = new ArrayList<>();
 		String sql = "SELECT * FROM agendamento";
-		try (Connection conn = Conexao.conectar();
+		try (Connection conn = Conexao.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 			while (rs.next()) {
@@ -59,7 +60,7 @@ public class AgendamentoDAO {
 
 	public void atualizar(Agendamento agendamento) {
 		String sql = "UPDATE agendamento SET Id_Cliente = ?, Id_Veiculo = ?, funcionario_id = ?, data_agendamento = ?, Tipo_Servico = ?,  WHERE id = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, agendamento.getCliente().getId_Cliente());
 			stmt.setInt(2, agendamento.getVeiculo().getId_Veiculo());
 			stmt.setInt(3, agendamento.getFuncionario().getId_Funcionario());
@@ -75,7 +76,7 @@ public class AgendamentoDAO {
 
 	public void excluir(int id) {
 		String sql = "DELETE FROM agendamento WHERE Id_Agendamento = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, id);
 			stmt.executeUpdate();
 			System.out.println("Agendamento excluído com sucesso!");
@@ -84,4 +85,5 @@ public class AgendamentoDAO {
 		}
 	}
 }
+
 
