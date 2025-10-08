@@ -1,7 +1,6 @@
-package dao;
-
-import model.Vistoria;
-import db.Conexao;
+package Vistoria.dao;
+import Vistoria.model.Vistoria;
+import Vistoria.DB.Conexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,14 +8,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
-import model.Funcionario;
-import model.Agendamento;
+import Vistoria.model.Funcionario;
+import Vistoria.model.Agendamento;
+
 
 public class VistoriaDAO {
 
 	public static boolean inserirVistoria(Vistoria vistoria) {
 		String sql = "INSERT INTO vistoria(Id_Funcionarios, Id_Agendamento, Data_Vistoria, Itens_Verificados, Observacao) VALUES (?, ?, ?, ?, ?)";
-		try (Connection conn = Conexao.conectar();
+		try (Connection conn = Vistoria.DB.Conexao.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setInt(1, vistoria.getFuncionario().getId_Funcionario());
@@ -49,7 +49,7 @@ public List<Vistoria> listar(){
 	List<Vistoria> vistorias = new ArrayList<>();
 	String sql = "SELECT * FROM vistoria";
 	
-	try (Connection conn = Conexao.conectar();
+	try (Connection conn = Conexao.getConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(sql)){
 		
@@ -77,7 +77,7 @@ public List<Vistoria> listar(){
 	public void atualizar(Vistoria vistoria) {
 		String sql = "UPDATE vistoria SET data_vistoria=?, itens_verificados=?, status_pagamento=?, observacoes=?, idPagamento=?, idFuncionario=? WHERE idVistoria=?";
 
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, vistoria.getIdVistoria());
 			stmt.setDate(2, vistoria.getDataVistoria());
@@ -97,7 +97,7 @@ public List<Vistoria> listar(){
 	public void excluir(int idVistoria) {
 		String sql = "DELETE FROM vistoria WHERE idVistoria=?";
 
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, idVistoria);
 			stmt.executeUpdate();
