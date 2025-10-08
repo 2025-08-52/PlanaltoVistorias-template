@@ -1,7 +1,8 @@
 
 package Vistoria.controller;
 
-import Vistoria.model.
+import Vistoria.model.*;
+import Vistoria.dao.AgendamentoDAO;
 import Vistoria.model.Agendamento;
 import Vistoria.model.Cliente;
 import Vistoria.model.Veiculo;
@@ -9,17 +10,20 @@ import Vistoria.model.Funcionario;
 import java.sql.Date;
 import java.util.List;
 
-public class Fncionario {
+public class AgendamentoController {
 	private AgendamentoDAO dao();
 
 	public AgendamentoController() {
-		dao = new AgendamentoDao();
+		dao = new AgendamentoDAO();
 
 	}
 
 	public void cadastrarAgendamento(Agendamento agendamento) {
-		if (agendamento.getCliente() == null || agendamento.getVeiculo() == null
-				|| agendamento.getFuncionario() == null | agendamento.getData_Agendamento() == null
+		if (agendamento == null
+				|| agendamento.getCliente() == null 
+				|| agendamento.getVeiculo() == null
+				|| agendamento.getFuncionario() == null 
+				|| agendamento.getData_Agendamento() == null
 				|| agendamento.getTipo_Servico().isEmpty()) {
 			System.out.println("Todos os campos são obrigatórios.");
 			return;
@@ -39,6 +43,7 @@ public class Fncionario {
 		}
 
 		dao.inserir(agendamento);
+		System.out.println("Agendamento cadastrado com sucesso.");
 
 	}
 
@@ -68,18 +73,20 @@ public class Fncionario {
 			return;
 		}
 		dao.atualizar(agendamento);
+		 System.out.println("Agendamento atualizado.");
 
 	}
 
 	public void excluirAgendamento(int id) {
 		dao.excluir(id);
+		System.out.println("Agendamento excluído.");
 	}
 
 	public void exibirAgendamento(int id) {
 		 List<Agendamento> agendamento = dao.listar();
-		 agendamento agendamentoEncontrado = null;
+		 Agendamento agendamentoEncontrado = null;
 		 
-		 for (agendamento a: agendamento) {
+		 for (Agendamento a: agendamento) {
 			 if (a.getId() == id) {
 				 agendamentoEncontrado = a;
 				 break;
@@ -118,9 +125,9 @@ public class Fncionario {
 		Agendamento.setVeiculo(Veiculo);
 		Agendamento.setData_Agendamento(Data_Agendamento);
 		Agendamento.setTipo_Servico(Tipo_Servico);
-	  CadastrarAgendamento(agendamento);
+		
+		cadastrarAgendamento(agendamento);
 
 	}
 
 }
-
