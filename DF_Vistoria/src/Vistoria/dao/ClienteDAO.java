@@ -1,10 +1,10 @@
-package dao;
+package Vistoria.dao;
 
 //importando os pacotes e classes necessarios
-import db.Conexao;
-import model.PagamentoController;
+import Vistoria.DB.Conexao;
+import Vistoria.model.PagamentoController;
 import java.sql.*;
-import model.Cliente;
+import Vistoria.model.Cliente;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class ClienteDAO {
 		//codigo sql que vai ser executado
 		String sql = "INSERT INTO Clientes (Nome, Cpf, Telefone, Email) VALUES (?, ?, ?, ?)";
 		//tentativa de conectar com o banco e executar o comando sql, com try e catch
-		try(Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+		 try (Connection conn = Vistoria.DB.Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 			
 			//inserindo os dados dentro do db
 			stmt.setString(1, cliente.getNome());
@@ -60,7 +60,7 @@ public class ClienteDAO {
 		String sql = "SELECT * FROM Clientes";
 		
 		//tentando realizar a operação e conectar ao db
-		try(Connection conn = Conexao.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)){
+		try(Connection conn = Vistoria.DB.Conexao.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)){
 			//cria uma laço, para enquanto tiver dados, criar um cliente e atribuir os dados
 			while(rs.next()) {
 				Cliente novoCliente = new Cliente();
@@ -94,7 +94,7 @@ public class ClienteDAO {
 		String sql = "UPDATE Clientes SET Nome = ?, Cpf = ?, Telefone = ?, Email = ? WHERE Id_Clientes = ?";
 		
 		//tentando conectar com o banco e realizar o sql
-		try(Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)){
+		try(Connection conn = Vistoria.DB.Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
 			
 			//passando os valores para inserir dentro do db
 			stmt.setString(1, cliente.getNome());
@@ -120,7 +120,7 @@ public class ClienteDAO {
 		String sql = "DELETE FROM Clientes WHERE Id_Clientes = ?";
 		
 		//tentando conectar com o banco e realizar o comando sql
-		try(Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)){
+		try(Connection conn = Vistoria.DB.Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
 			
 			//passando os dados para inserir dentro do db
 			stmt.setInt(1, idCliente);
@@ -135,4 +135,3 @@ public class ClienteDAO {
 	}
 	
 }
-
