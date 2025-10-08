@@ -28,7 +28,7 @@ public class AgendamentoController {
 			System.out.println("Todos os campos são obrigatórios.");
 			return;
 		}
-		if (agendamento.Tipo_Servico().lenght() < 3) {
+		if (agendamento.getTipo_Servico().length() < 3) {
 			System.out.println("Tipos de serviço deve ter pelo menos 3 caracteres.");
 			return;
 
@@ -55,15 +55,21 @@ public class AgendamentoController {
 
 		}
 		for (Agendamento a : agendamento) {
-			System.out.println("Id:" + a.getId() + "| Cliente ID:" + a.getCliente().getId_Cliente() + "| Veiculo ID:"
-					+ a.getVeiculo().getId_Veiculo() + "| Funcionario ID:" + a.getFuncionario().getId_Funcionario()
-					+ "|Data:" + a.getData_Agendamento() + "| Serviço: " + a.getTipo_Servico());
+			System.out.println("Id:" + a.getId() + 
+					"| Cliente ID:" + a.getCliente().getId_Cliente() +
+					"| Veiculo ID:"+ a.getVeiculo().getId_Veiculo() + 
+					"| Funcionario ID:" + a.getFuncionario().getId_Funcionario() + 
+					"|Data:" + a.getData_Agendamento() + 
+					"| Serviço: " + a.getTipo_Servico());
 		}
 	}
 
 	public void atualizarAgendamento(Agendamento agendamento) {
-		if (agendamento.getCliente() == null || agendamento.getVeiculo() == null
-				|| agendamento.getFuncionario() == null | agendamento.getData_Agendamento() == null
+		if (agendamento == null
+				||agendamento.getCliente() == null 
+				|| agendamento.getVeiculo() == null
+				|| agendamento.getFuncionario() == null 
+				|| agendamento.getData_Agendamento() == null
 				|| agendamento.getTipo_Servico().isEmpty()) {
 			System.out.println("Todos os campos sao obrigatorios.");
 			return;
@@ -93,6 +99,7 @@ public class AgendamentoController {
 				 
 			 }
 		 }
+	
 		 
 		 if(agendamentoEncontrado !=null) {
 			 System.out.println("---- Detalhes do Agendamento ----");
