@@ -1,5 +1,6 @@
 package Vistoria.dao;
 
+import Vistoria.DB.Conexao;
 import Vistoria.model.Veiculo;
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 public class VeiculoDAO {
 	public static void inserir(Veiculo veiculo) {
 		String sql = "INSERT INTO Veiculos (Placa, Marca, Modelo, Ano, Numero_chassi, Id_Clientes) VALUES (?, ?, ?, ?, ?, ?)";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		 try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, veiculo.getPlaca());
 			stmt.setString(2, veiculo.getMarca());
 			stmt.setString(3, veiculo.getModelo());
@@ -36,7 +37,7 @@ public class VeiculoDAO {
 	public List<Veiculo> listar() {
 		List<Veiculo> lista = new ArrayList<>();
 		String sql = "SELECT * FROM Veiculo";
-		try (Connection conn = Conexao.conectar();
+		try (Connection conn = Conexao.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 			while (rs.next()) {
@@ -58,7 +59,7 @@ public class VeiculoDAO {
 
 	public void atualizar(Veiculo veiculo) {
 		String sql = "UPDATE Veiculo SET Placa = ?, Marca = ?, Modelo = ?, Ano = ?, Numero_chassi = ?, Id_Cliente = ? WHERE Id_Veiculo = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, veiculo.getPlaca());
 			stmt.setString(2, veiculo.getMarca());
 			stmt.setString(3, veiculo.getModelo());
@@ -75,7 +76,7 @@ public class VeiculoDAO {
 
 	public void excluir(int Id_Veiculo) {
 		String sql = "DELETE FROM Veiculo WHERE Id_Veiculo = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, Id_Veiculo);
 			stmt.executeUpdate();
 			System.out.println("Veículo excluído com sucesso!");
@@ -86,7 +87,7 @@ public class VeiculoDAO {
 
 	public Veiculo buscarPorPlaca(String placa) {
 		String sql = "SELECT * FROM Veiculo WHERE Placa = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, placa);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
@@ -109,7 +110,7 @@ public class VeiculoDAO {
 
 	public Veiculo buscarPorChassi(String numeroChassi) {
 		String sql = "SELECT * FROM Veiculo WHERE Numero_chassi = ?";
-		try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, numeroChassi);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
