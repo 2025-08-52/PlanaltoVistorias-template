@@ -2,13 +2,13 @@ package Vistoria.view;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import Vistoria.model.Funcionario;
 import Vistoria.model.Agendamento;
-import Vistoria.model.Vistoria;
 import Vistoria.controller.AgendamentoController;
 import Vistoria.controller.VistoriaController;
 import Vistoria.controller.VeiculoController;
@@ -19,6 +19,7 @@ import Vistoria.dao.AgendamentoDAO;
  */
 public class DashboardVistoriador extends JFrame {
 
+    private static final long serialVersionUID = 1L;
     private final Funcionario usuarioAtual;
     private final AgendamentoController agendamentoCtrl;
     private final VistoriaController vistoriaCtrl;
@@ -32,11 +33,12 @@ public class DashboardVistoriador extends JFrame {
     private JLabel lblConcluidos;
     private JLabel lblCancelados;
 
-    private JTable tabelaAgendamentos;
-    private DefaultTableModel modeloTabela;
+    private JTable tableAgendamentos;
+    private DefaultTableModel modelTabela;
     private List<Agendamento> agendamentos;
 
-    public PainelPrincipalVistoriador(Funcionario funcionario) {
+    /** Construtor principal **/
+    public DashboardVistoriador(Funcionario funcionario) {
         this.usuarioAtual = funcionario;
         this.agendamentoCtrl = new AgendamentoController();
         this.vistoriaCtrl = new VistoriaController();
@@ -50,6 +52,7 @@ public class DashboardVistoriador extends JFrame {
         setVisible(true);
     }
 
+    /** Configuração da janela **/
     private void configurarJanela() {
         setTitle("Painel do Vistoriador - DF Vistoria");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -58,6 +61,7 @@ public class DashboardVistoriador extends JFrame {
         setLayout(new BorderLayout());
     }
 
+    /** Inicializa os painéis e menu **/
     private void inicializarLayout() {
         JPanel menuLateral = criarMenuLateral();
 
@@ -74,6 +78,7 @@ public class DashboardVistoriador extends JFrame {
         add(painelCards, BorderLayout.CENTER);
     }
 
+    /** Menu lateral **/
     private JPanel criarMenuLateral() {
         JPanel menu = new JPanel();
         menu.setBackground(new Color(25, 118, 210));
@@ -99,7 +104,6 @@ public class DashboardVistoriador extends JFrame {
         btnRelat.addActionListener(e -> layoutCards.show(painelCards, "Relatorio"));
         btnSair.addActionListener(e -> {
             dispose();
-            new Login().setVisible(true);
         });
 
         menu.add(titulo);
@@ -115,6 +119,7 @@ public class DashboardVistoriador extends JFrame {
         return menu;
     }
 
+    /** Criação dos botões do menu **/
     private JButton criarBotaoMenu(String texto) {
         JButton botao = new JButton(texto);
         botao.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -137,6 +142,7 @@ public class DashboardVistoriador extends JFrame {
         return botao;
     }
 
+    /** Painel de resumo (cards) **/
     private JPanel criarPainelResumo() {
         JPanel painel = new JPanel(new GridLayout(1, 3, 20, 0));
         painel.setBackground(new Color(245, 245, 245));
@@ -152,6 +158,7 @@ public class DashboardVistoriador extends JFrame {
         return painel;
     }
 
+    /** Criação de cada card do resumo **/
     private JLabel criarCard(String titulo, Color corTitulo) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(Color.WHITE);
@@ -171,9 +178,14 @@ public class DashboardVistoriador extends JFrame {
         card.add(lblTitulo, BorderLayout.NORTH);
         card.add(lblValor, BorderLayout.CENTER);
 
+        // retorna o número (para atualizar depois)
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(card, BorderLayout.CENTER);
+
         return lblValor;
     }
 
+    /** Painel de agendamentos **/
     private JPanel criarPainelAgendamentos() {
         JPanel painel = new JPanel(new BorderLayout(15, 15));
         painel.setBackground(new Color(245, 245, 245));
@@ -183,14 +195,16 @@ public class DashboardVistoriador extends JFrame {
         painel.add(titulo, BorderLayout.NORTH);
 
         String[] colunas = {"ID", "Data", "Hora", "Cliente", "Veículo"};
-        modeloTabela = new DefaultTableModel(colunas, 0) {
+        modelTabela = new DefaultTableModel(colunas, 0) {
+            private static final long serialVersionUID = 1L;
             public boolean isCellEditable(int r, int c) { return false; }
         };
-        tabelaAgendamentos = new JTable(modeloTabela);
-        tabelaAgendamentos.setRowHeight(30);
-        tabelaAgendamentos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        JScrollPane scroll = new JScrollPane(tabelaAgendamentos);
+        tableAgendamentos = new JTable(modelTabela);
+        tableAgendamentos.setRowHeight(30);
+        tableAgendamentos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        JScrollPane scroll = new JScrollPane(tableAgendamentos);
         painel.add(scroll, BorderLayout.CENTER);
 
         JButton btnNovaVistoria = new JButton("Nova Vistoria");
@@ -198,7 +212,7 @@ public class DashboardVistoriador extends JFrame {
         btnNovaVistoria.setForeground(Color.WHITE);
         btnNovaVistoria.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnNovaVistoria.addActionListener(e -> {
-            int row = tabelaAgendamentos.getSelectedRow();
+            int row = tableAgendamentos.getSelectedRow();
             if (row >= 0) {
                 Agendamento ag = agendamentos.get(row);
                 abrirFormularioVistoria(ag);
@@ -215,6 +229,7 @@ public class DashboardVistoriador extends JFrame {
         return painel;
     }
 
+    /** Painel de relatório **/
     private JPanel criarPainelRelatorio() {
         JPanel painel = new JPanel();
         painel.setBackground(Color.LIGHT_GRAY);
@@ -222,22 +237,24 @@ public class DashboardVistoriador extends JFrame {
         return painel;
     }
 
+    /** Carrega os agendamentos **/
     private void carregarAgendamentos() {
-        modeloTabela.setRowCount(0);
+        modelTabela.setRowCount(0);
         agendamentos = new ArrayList<>();
         agendamentos = agendamentoDAO.listarAgendamentosAgendadosComDetalhes();
 
         for (Agendamento a : agendamentos) {
-            modeloTabela.addRow(new Object[]{
-                a.getIdAgendamento(),
-                a.getData_agendamento(),
-                a.getHora(),
-                a.getCliente().getNome(),
-                a.getVeiculo().getPlaca()
+            modelTabela.addRow(new Object[]{
+                    a.getIdAgendamento(),
+                    a.getData_agendamento(),
+                    a.getHora(),
+                    a.getCliente().getNome(),
+                    a.getVeiculo().getPlaca()
             });
         }
     }
 
+    /** Abre o formulário de vistoria **/
     private void abrirFormularioVistoria(Agendamento agendamento) {
         JPanel form = new JPanel(new GridLayout(5, 2, 10, 10));
 
@@ -260,14 +277,15 @@ public class DashboardVistoriador extends JFrame {
         }
     }
 
+    /** Atualiza os valores dos cards **/
     private void atualizarCards() {
         lblPendentes.setText(String.valueOf(agendamentoDAO.contarAgendamentosAgendado()));
         lblConcluidos.setText(String.valueOf(agendamentoDAO.contarAgendamentosConcluido()));
         lblCancelados.setText(String.valueOf(agendamentoDAO.contarAgendamentosCancelado()));
     }
 
+    /** Método principal **/
     public static void main(String[] args) {
-        new PainelPrincipalVistoriador(new Funcionario());
+        SwingUtilities.invokeLater(() -> new DashboardVistoriador(new Funcionario()));
     }
 }
-
