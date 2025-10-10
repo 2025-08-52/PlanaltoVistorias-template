@@ -34,7 +34,7 @@ public class VeiculoDAO {
 		}
 	}
 
-	public List<Veiculo> listar() {
+	public List<Veiculo> listaVeiculo()) {
 		List<Veiculo> lista = new ArrayList<>();
 		String sql = "SELECT * FROM Veiculo";
 		try (Connection conn = Conexao.getConnection();
