@@ -6,42 +6,33 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 import dao.AutenticacaoDAO;
-import model.Cliente;
-import dao.ClienteDAO;
 
 public class TelaLogin extends JPanel {
-
     private JTextField txtEmail;
     private JPasswordField txtSenha;
-
     private final Random rand = new Random();
 
     public TelaLogin(JPanel principal, CardLayout card) {
         setLayout(new GridBagLayout());
 
-        // Fundo estrelado
+        // Painel de fundo estrelado
         JPanel painelFundo = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                // Fundo preto
                 g2d.setColor(Color.BLACK);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
-
-                // Estrelas lentas
                 drawStars(g2d, getWidth(), getHeight());
             }
-
             private void drawStars(Graphics2D g2d, int width, int height) {
                 g2d.setColor(Color.WHITE);
-                int quantidade = 30;
+                int quantidade = 35;
                 for (int i = 0; i < quantidade; i++) {
                     int x = rand.nextInt(width);
-                    int y = rand.nextInt(height - 80);
-                    float opacity = (float) (0.1 + 0.9 * Math.abs(Math.sin(System.currentTimeMillis() / (8000.0 + i * 20))));
+                    int y = rand.nextInt(height);
+                    float opacity = (float) (0.15 + 0.5 * Math.abs(Math.sin(System.currentTimeMillis() / (6000.0 + i * 20))));
                     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
                     g2d.fillOval(x, y, rand.nextInt(2) + 2, rand.nextInt(2) + 2);
                 }
@@ -54,89 +45,136 @@ public class TelaLogin extends JPanel {
         Timer timer = new Timer(250, e -> painelFundo.repaint());
         timer.start();
 
-        // Painel do formulário alinhado à esquerda
-        JPanel painelForm = new JPanel();
-        painelForm.setPreferredSize(new Dimension(320, 300));
-        painelForm.setBackground(Color.WHITE);
-        painelForm.setLayout(new BoxLayout(painelForm, BoxLayout.Y_AXIS));
-        painelForm.setBorder(new EmptyBorder(35, 35, 35, 35));
+        // Painel vertical para a imagem + login
+        JPanel painelVertical = new JPanel();
+        painelVertical.setLayout(new BoxLayout(painelVertical, BoxLayout.Y_AXIS));
+        painelVertical.setOpaque(false);
 
-        JLabel lblLogin = new JLabel("Login");
-        lblLogin.setFont(new Font("SansSerif", Font.BOLD, 28));
-        lblLogin.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblLogin.setForeground(new Color(26, 26, 46));
+        // Imagem do carro acima do login
+        JLabel lblCarro = new JLabel();
+        lblCarro.setAlignmentX(Component.CENTER_ALIGNMENT);
+        try {
+            ImageIcon iconCarro = new ImageIcon(getClass().getResource("/carro.png"));
+            Image img = iconCarro.getImage().getScaledInstance(340, 120, Image.SCALE_SMOOTH);
+            lblCarro.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            lblCarro.setText("Carro");
+            lblCarro.setForeground(Color.WHITE);
+        }
+        painelVertical.add(lblCarro);
+        painelVertical.add(Box.createVerticalStrut(10));
+
+        // Painel do formulário (card de login)
+        JPanel painelForm = new JPanel();
+        painelForm.setPreferredSize(new Dimension(340, 350));
+        painelForm.setBackground(new Color(36, 36, 46, 200));
+        painelForm.setLayout(new BoxLayout(painelForm, BoxLayout.Y_AXIS));
+        painelForm.setBorder(new EmptyBorder(30, 32, 32, 32));
+
+        // Título do Login
+        JLabel lblLogin = new JLabel("LOGIN");
+        lblLogin.setFont(new Font("SansSerif", Font.BOLD, 32));
+        lblLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblLogin.setForeground(new Color(255, 235, 120));
         painelForm.add(lblLogin);
         painelForm.add(Box.createVerticalStrut(22));
 
-        // Label para Email
-        JLabel lblEmailField = new JLabel("E-mail:");
-        lblEmailField.setFont(new Font("SansSerif", Font.PLAIN, 15));
-        lblEmailField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblEmailField.setForeground(new Color(60, 60, 80));
-        painelForm.add(lblEmailField);
-
-        txtEmail = new JTextField();
-        txtEmail.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        // Campo Email
+        txtEmail = new JTextField("E-mail");
+        txtEmail.setFont(new Font("SansSerif", Font.BOLD, 15));
         txtEmail.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        txtEmail.setBackground(new Color(238, 238, 238));
-        txtEmail.setBorder(new EmptyBorder(8, 14, 8, 14));
-        txtEmail.setToolTipText("Digite seu e-mail");
-        txtEmail.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtEmail.setBackground(new Color(26, 26, 36));
+        txtEmail.setForeground(Color.WHITE);
+        txtEmail.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(80, 80, 80), 1, true),
+            new EmptyBorder(10, 12, 10, 12)
+        ));
+        txtEmail.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtEmail.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (txtEmail.getText().equals("E-mail")) txtEmail.setText("");
+            }
+            public void focusLost(FocusEvent e) {
+                if (txtEmail.getText().isEmpty()) txtEmail.setText("E-mail");
+            }
+        });
         painelForm.add(txtEmail);
-        painelForm.add(Box.createVerticalStrut(17));
+        painelForm.add(Box.createVerticalStrut(14));
 
-        // Label para Senha
-        JLabel lblSenhaField = new JLabel("Senha:");
-        lblSenhaField.setFont(new Font("SansSerif", Font.PLAIN, 15));
-        lblSenhaField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblSenhaField.setForeground(new Color(60, 60, 80));
-        painelForm.add(lblSenhaField);
-
-        txtSenha = new JPasswordField();
-        txtSenha.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        // Campo Senha
+        txtSenha = new JPasswordField("Senha");
+        txtSenha.setFont(new Font("SansSerif", Font.BOLD, 15));
         txtSenha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        txtSenha.setBackground(new Color(238, 238, 238));
-        txtSenha.setBorder(new EmptyBorder(8, 14, 8, 14));
-        txtSenha.setToolTipText("Digite sua senha");
-        txtSenha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtSenha.setBackground(new Color(26, 26, 36));
+        txtSenha.setForeground(Color.WHITE);
+        txtSenha.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(80, 80, 80), 1, true),
+            new EmptyBorder(10, 12, 10, 12)
+        ));
+        txtSenha.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtSenha.setEchoChar((char)0);
+        txtSenha.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(txtSenha.getPassword()).equals("Senha")) {
+                    txtSenha.setText("");
+                    txtSenha.setEchoChar('•');
+                }
+            }
+            public void focusLost(FocusEvent e) {
+                if (String.valueOf(txtSenha.getPassword()).isEmpty()) {
+                    txtSenha.setText("Senha");
+                    txtSenha.setEchoChar((char)0);
+                }
+            }
+        });
         painelForm.add(txtSenha);
-        painelForm.add(Box.createVerticalStrut(24));
+        painelForm.add(Box.createVerticalStrut(22));
 
-        JButton btnEntrar = new JButton("Entrar");
-        btnEntrar.setBackground(new Color(26, 26, 46));
-        btnEntrar.setForeground(Color.WHITE);
-        btnEntrar.setFont(new Font("SansSerif", Font.BOLD, 15));
+        // Botão Entrar
+        JButton btnEntrar = new JButton("  LOGIN");
+        btnEntrar.setBackground(new Color(255, 235, 120));
+        btnEntrar.setForeground(new Color(26, 26, 46));
+        btnEntrar.setFont(new Font("SansSerif", Font.BOLD, 16));
         btnEntrar.setFocusPainted(false);
-        btnEntrar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnEntrar.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnEntrar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        btnEntrar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnEntrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnEntrar.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
+        try {
+            btnEntrar.setIcon(new ImageIcon(getClass().getResource("/lock.png")));
+        } catch (Exception e) {}
         painelForm.add(btnEntrar);
 
-        // Alinhar o painelForm à esquerda usando GridBagConstraints
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0; gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST; // alinhado à esquerda
-        gbc.insets = new Insets(0, 50, 0, 0); // margem da esquerda
-        painelFundo.add(painelForm, gbc);
+        // [REMOVIDO SIGN UP]
 
+        painelVertical.add(painelForm);
+
+        // Centraliza tudo na tela
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        painelFundo.add(painelVertical, gbc);
+
+        // Adiciona ao painel principal
         GridBagConstraints gbcRoot = new GridBagConstraints();
-        gbcRoot.gridx = 0; gbcRoot.gridy = 0;
+        gbcRoot.gridx = 0;
+        gbcRoot.gridy = 0;
         gbcRoot.anchor = GridBagConstraints.CENTER;
         gbcRoot.fill = GridBagConstraints.BOTH;
-        gbcRoot.weightx = 1.0; gbcRoot.weighty = 1.0;
+        gbcRoot.weightx = 1.0;
+        gbcRoot.weighty = 1.0;
         add(painelFundo, gbcRoot);
 
+        // Lógica do botão de login
         btnEntrar.addActionListener(e -> {
             String email = txtEmail.getText().trim();
             String senha = new String(txtSenha.getPassword()).trim();
-            if (email.isEmpty() || senha.isEmpty()) {
+            if (email.equals("E-mail") || email.isEmpty() || senha.equals("Senha") || senha.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
             String tipoUsuario = AutenticacaoDAO.autenticar(email, senha);
-            int idCliente = AutenticacaoDAO.pegarIdCliente(email);
-            int idFuncionario = AutenticacaoDAO.pegarIdFuncionario(email);
-
             if (tipoUsuario == null) {
                 JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!", "Erro", JOptionPane.ERROR_MESSAGE);
             } else {
