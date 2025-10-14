@@ -1,0 +1,199 @@
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.Date;
+import java.util.List;
+import controller.VistoriaController;
+import model.Vistoria;
+
+public class DashboardVistoriador extends JFrame {
+
+    private JTextField txtIdVistoria, txtDataVistoria, txtItensVerificados, txtObservacao, txtIdAgendamento, txtIdFuncionario;
+    private JButton btnSalvar, btnAtualizar, btnExcluir, btnBuscar, btnListar;
+    private JTextArea areaResultado;
+
+    private VistoriaController controller;
+
+    public DashboardVistoriador() {
+        super("Gerenciar Vistorias");
+        controller = new VistoriaController();
+
+        // Painel principal
+        setLayout(new BorderLayout());
+        JPanel painelCampos = new JPanel(new GridLayout(7, 2, 5, 5));
+
+        Font fonteCampos = new Font("Arial", Font.PLAIN, 18);
+        Font fonteRotulos = new Font("Arial", Font.BOLD, 18);
+        Font fonteBotoes = new Font("Arial", Font.BOLD, 16);
+
+        // Campos e rótulos com fonte grande
+        JLabel lblIdVistoria = new JLabel("ID Vistoria:");
+        lblIdVistoria.setFont(fonteRotulos);
+        txtIdVistoria = new JTextField();
+        txtIdVistoria.setFont(fonteCampos);
+        painelCampos.add(lblIdVistoria);
+        painelCampos.add(txtIdVistoria);
+
+        JLabel lblData = new JLabel("Data (AAAA-MM-DD):");
+        lblData.setFont(fonteRotulos);
+        txtDataVistoria = new JTextField();
+        txtDataVistoria.setFont(fonteCampos);
+        painelCampos.add(lblData);
+        painelCampos.add(txtDataVistoria);
+
+        JLabel lblItens = new JLabel("Itens Verificados:");
+        lblItens.setFont(fonteRotulos);
+        txtItensVerificados = new JTextField();
+        txtItensVerificados.setFont(fonteCampos);
+        painelCampos.add(lblItens);
+        painelCampos.add(txtItensVerificados);
+
+        JLabel lblObs = new JLabel("Observação:");
+        lblObs.setFont(fonteRotulos);
+        txtObservacao = new JTextField();
+        txtObservacao.setFont(fonteCampos);
+        painelCampos.add(lblObs);
+        painelCampos.add(txtObservacao);
+
+        JLabel lblAgendamento = new JLabel("ID Agendamento:");
+        lblAgendamento.setFont(fonteRotulos);
+        txtIdAgendamento = new JTextField();
+        txtIdAgendamento.setFont(fonteCampos);
+        painelCampos.add(lblAgendamento);
+        painelCampos.add(txtIdAgendamento);
+
+        JLabel lblFuncionario = new JLabel("ID Funcionário:");
+        lblFuncionario.setFont(fonteRotulos);
+        txtIdFuncionario = new JTextField();
+        txtIdFuncionario.setFont(fonteCampos);
+        painelCampos.add(lblFuncionario);
+        painelCampos.add(txtIdFuncionario);
+
+        add(painelCampos, BorderLayout.NORTH);
+
+        // Botões com fonte maior
+        JPanel painelBotoes = new JPanel();
+        btnSalvar = new JButton("Salvar");
+        btnSalvar.setFont(fonteBotoes);
+        btnAtualizar = new JButton("Atualizar");
+        btnAtualizar.setFont(fonteBotoes);
+        btnExcluir = new JButton("Excluir");
+        btnExcluir.setFont(fonteBotoes);
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.setFont(fonteBotoes);
+        btnListar = new JButton("Listar Todos");
+        btnListar.setFont(fonteBotoes);
+
+        painelBotoes.add(btnSalvar);
+        painelBotoes.add(btnAtualizar);
+        painelBotoes.add(btnExcluir);
+        painelBotoes.add(btnBuscar);
+        painelBotoes.add(btnListar);
+        add(painelBotoes, BorderLayout.CENTER);
+
+        // Área de resultados
+        areaResultado = new JTextArea(5, 50);
+        areaResultado.setEditable(false);
+        areaResultado.setFont(new Font("Consolas", Font.PLAIN, 16));
+        add(new JScrollPane(areaResultado), BorderLayout.SOUTH);
+
+        // Ações dos botões
+        configurarEventos();
+
+        // Configuração da janela
+        setSize(1200, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void configurarEventos() {
+
+        // Salvar
+        btnSalvar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtIdVistoria.getText());
+                Date data = Date.valueOf(txtDataVistoria.getText());
+                String itens = txtItensVerificados.getText();
+                String obs = txtObservacao.getText();
+                int idAgendamento = Integer.parseInt(txtIdAgendamento.getText());
+                int idFuncionario = Integer.parseInt(txtIdFuncionario.getText());
+
+                controller.cadastrarVistoria(id, data, itens, obs, idAgendamento, idFuncionario);
+                areaResultado.setText("✅ Vistoria salva com sucesso!");
+            } catch (Exception ex) {
+                areaResultado.setText("Erro ao salvar: " + ex.getMessage());
+            }
+        });
+
+        // Buscar
+        btnBuscar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtIdVistoria.getText());
+                Vistoria v = controller.buscarVistoria(id);
+                if (v != null) {
+                    areaResultado.setText("✅ Vistoria encontrada:\n" + v.toString());
+                } else {
+                    areaResultado.setText("❌ Vistoria não encontrada.");
+                }
+            } catch (Exception ex) {
+                areaResultado.setText("Erro ao buscar: " + ex.getMessage());
+            }
+        });
+
+        // Atualizar
+        btnAtualizar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtIdVistoria.getText());
+                Date data = Date.valueOf(txtDataVistoria.getText());
+                String itens = txtItensVerificados.getText();
+                String obs = txtObservacao.getText();
+                int idAgendamento = Integer.parseInt(txtIdAgendamento.getText());
+                int idFuncionario = Integer.parseInt(txtIdFuncionario.getText());
+
+                Vistoria v = new Vistoria(id, data, itens, obs, idAgendamento, idFuncionario);
+                controller.atualizarVistoria(v);
+                areaResultado.setText("✅ Vistoria atualizada!");
+            } catch (Exception ex) {
+                areaResultado.setText("Erro ao atualizar: " + ex.getMessage());
+            }
+        });
+
+        // Excluir
+        btnExcluir.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtIdVistoria.getText());
+                controller.excluirVistoria(id);
+                areaResultado.setText("✅ Vistoria excluída!");
+            } catch (Exception ex) {
+                areaResultado.setText("Erro ao excluir: " + ex.getMessage());
+            }
+        });
+
+        // Listar todos
+        btnListar.addActionListener(e -> {
+            try {
+                List<Vistoria> lista = controller.listarVistorias();
+                StringBuilder sb = new StringBuilder("📋 Lista de Vistorias:\n");
+                for (Vistoria v : lista) {
+                    sb.append(v.toString()).append("\n");
+                }
+                areaResultado.setText(sb.toString());
+            } catch (Exception ex) {
+                areaResultado.setText("Erro ao listar: " + ex.getMessage());
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        // Define fonte global (opcional)
+        UIManager.put("Label.font", new Font("Arial", Font.BOLD, 18));
+        UIManager.put("TextField.font", new Font("Arial", Font.PLAIN, 18));
+        UIManager.put("Button.font", new Font("Arial", Font.BOLD, 16));
+        UIManager.put("TextArea.font", new Font("Consolas", Font.PLAIN, 16));
+
+        new DashboardVistoriador();
+    }
+}
